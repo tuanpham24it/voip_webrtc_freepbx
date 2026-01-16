@@ -1,0 +1,146 @@
+/* Hold Music Styles */
+
+.hold-music-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.hold-music-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.hold-music-indicator .icon {
+    width: 16px;
+    height: 16px;
+    animation: pulse 2s infinite;
+}
+
+.hold-music-indicator.playing {
+    color: #28a745;
+}
+
+.hold-music-indicator.playing .icon {
+    animation: spin 2s linear infinite;
+}
+
+.hold-music-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hold-music-selector select {
+    padding: 4px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.hold-music-volume {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.hold-music-volume input[type="range"] {
+    width: 80px;
+    height: 4px;
+    background: #ddd;
+    outline: none;
+    border-radius: 2px;
+}
+
+.hold-music-volume input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.hold-music-volume input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #007bff;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hold Music Status */
+.hold-music-status {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 1000;
+    display: none;
+}
+
+.hold-music-status.show {
+    display: block;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hold-music-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .hold-music-indicator {
+        justify-content: center;
+    }
+    
+    .hold-music-selector {
+        justify-content: center;
+    }
+    
+    .hold-music-volume {
+        justify-content: center;
+    }
+}
+
+
+
+
+
+

@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoIP WebRTC FreePBX - Enterprise-Grade Phone System for Odoo 17</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #a8498f;
+            --secondary-color: #7d3a75;
+            --accent-color: #667eea;
+            --success-color: #48bb78;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --info-color: #3498db;
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            --gradient-success: linear-gradient(135deg, var(--success-color) 0%, #38a169 100%);
+            --gradient-info: linear-gradient(135deg, var(--info-color) 0%, #2980b9 100%);
+            --shadow-light: 0 5px 20px rgba(0,0,0,0.08);
+            --shadow-medium: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-heavy: 0 20px 60px rgba(0,0,0,0.15);
+            --border-radius: 15px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .gradient-text {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(255,255,255,0.1)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-logo {
+            text-align: center;
+        }
+
+        .hero-logo img {
+            width: 100%;
+            max-width: 300px;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+            transition: var(--transition);
+        }
+
+        .hero-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-text .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .license-badge {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            box-shadow: var(--shadow-medium);
+            display: inline-block;
+            margin: 20px 0;
+            transition: var(--transition);
+        }
+
+        .license-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .tech-badge {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .tech-badge:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 60px;
+            font-weight: 700;
+        }
+
+        .screenshot-gallery {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border: 2px solid rgba(168, 73, 143, 0.1);
+            border-radius: 25px;
+            padding: 60px;
+            margin: 40px 0;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .screenshot-card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .screenshot-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .screenshot-card:hover img {
+            transform: scale(1.02);
+        }
+
+        .screenshot-card h4 {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .screenshot-card p {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .tag-blue {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .tag-green {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .tag-orange {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .features-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .feature-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .license-section {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .license-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .license-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .license-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .license-card ul {
+            list-style: none;
+        }
+
+        .license-card li {
+            padding: 8px 0;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .license-card li i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .support-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 25px;
+            padding: 50px;
+            margin: 40px 0;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .support-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .support-item i {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .support-item p {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .tech-specs {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 25px;
+            padding: 60px;
+            margin: 40px 0;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .spec-card {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .spec-card:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-5px);
+        }
+
+        .spec-card i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #48bb78;
+        }
+
+        .spec-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .spec-card p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .tech-item {
+            background: white;
+            color: var(--primary-color);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .tech-item:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 60px 0;
+            border-radius: 25px;
+            margin: 40px 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-card {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .footer-card h4 {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .footer-card p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .contact-section {
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            margin: 40px 0;
+            box-shadow: var(--shadow-light);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .contact-item {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .contact-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .contact-item i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .contact-item strong {
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-text .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .screenshot-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tech-badges {
+                justify-content: center;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-logo">
+                <img src="icon.png" alt="VoIP WebRTC FreePBX Logo" class="pulse">
+            </div>
+            <div class="hero-text">
+                <h1>VoIP WebRTC FreePBX</h1>
+                <p class="subtitle">Enterprise-Grade Phone System for Odoo 18</p>
+                
+                <div class="license-badge">
+                    <i class="fas fa-shield-alt" style="margin-right: 10px;"></i>Commercial License
+                    <div style="font-size: 0.9rem; opacity: 0.9; margin-top: 5px;">Professional Phone System</div>
+                </div>
+                
+                <div class="tech-badges">
+                    <div class="tech-badge">
+                        <i class="fas fa-check" style="margin-right: 8px;"></i>Odoo 18
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-check" style="margin-right: 8px;"></i>WebRTC
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-check" style="margin-right: 8px;"></i>FreePBX/Asterisk
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-shield-alt" style="margin-right: 8px;"></i>Commercial License
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Screenshot Gallery -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title gradient-text">Complete System Screenshots</h2>
+        
+        <div class="screenshot-gallery">
+            <p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 40px;">
+                Explore all the features and capabilities of our enterprise-grade VoIP WebRTC FreePBX system through these comprehensive screenshots
+            </p>
+            
+            <div class="screenshot-grid">
+                <!-- 01.png - VoIP Dialer -->
+                <div class="screenshot-card fade-in">
+                    <img src="01.png" alt="Professional VoIP Dialer Interface">
+                    <h4>Professional VoIP Dialer</h4>
+                    <p>
+                        Modern dialer interface with numeric keypad, call controls, tabbed navigation for dialer, 
+                        active calls, history, and contacts with intuitive user experience design.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Numeric Keypad</span>
+                        <span class="feature-tag tag-green">Tabbed Navigation</span>
+                        <span class="feature-tag tag-orange">Call Controls</span>
+                    </div>
+                </div>
+                
+                <!-- 02.png - Active Call Controls -->
+                <div class="screenshot-card fade-in">
+                    <img src="02.png" alt="Active Call Controls Interface">
+                    <h4>Active Call Controls</h4>
+                    <p>
+                        Complete call control interface with mute, hang up, transfer, hold, music, and auto-recording 
+                        features with professional design and intuitive user experience.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Mute Control</span>
+                        <span class="feature-tag tag-green">Transfer</span>
+                        <span class="feature-tag tag-orange">Auto Recording</span>
+                    </div>
+                </div>
+                
+                <!-- 03.png - Incoming Call Interface -->
+                <div class="screenshot-card fade-in">
+                    <img src="03.png" alt="Incoming Call Interface">
+                    <h4>Incoming Call Interface</h4>
+                    <p>
+                        Beautiful incoming call notification interface with caller information, answer/decline controls, 
+                        professional UI design, and seamless call handling experience.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Caller Info</span>
+                        <span class="feature-tag tag-green">Answer/Decline</span>
+                        <span class="feature-tag tag-orange">Professional UI</span>
+                    </div>
+                </div>
+                
+                <!-- 04.png - Call Transfer System -->
+                <div class="screenshot-card fade-in">
+                    <img src="04.png" alt="Call Transfer System">
+                    <h4>Call Transfer System</h4>
+                    <p>
+                        Advanced call transfer interface with real-time user search, professional transfer UI, 
+                        seamless call management, and comprehensive transfer options for enhanced productivity.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Real-time Search</span>
+                        <span class="feature-tag tag-green">Transfer UI</span>
+                        <span class="feature-tag tag-orange">Call Management</span>
+                    </div>
+                </div>
+                
+                <!-- 05.png - Transfer Success Notification -->
+                <div class="screenshot-card fade-in">
+                    <img src="05.png" alt="Transfer Success Notification">
+                    <h4>Transfer Success Notification</h4>
+                    <p>
+                        Real-time transfer notification interface with success confirmation, seamless call management, 
+                        and professional notification system for enhanced user experience.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Real-time Notifications</span>
+                        <span class="feature-tag tag-green">Success Confirmation</span>
+                        <span class="feature-tag tag-orange">Call Management</span>
+                    </div>
+                </div>
+                
+                <!-- 06.png - Call History Tab -->
+                <div class="screenshot-card fade-in">
+                    <img src="06.png" alt="Call History Tab">
+                    <h4>Call History Tab</h4>
+                    <p>
+                        Comprehensive call history interface with detailed call information, duration tracking, 
+                        recording indicators, and advanced filtering options for call analysis.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Call Details</span>
+                        <span class="feature-tag tag-green">Duration Tracking</span>
+                        <span class="feature-tag tag-orange">Recording Indicators</span>
+                    </div>
+                </div>
+                
+                <!-- 07.png - Contacts Management -->
+                <div class="screenshot-card fade-in">
+                    <img src="07.png" alt="Contacts Management">
+                    <h4>Contacts Management</h4>
+                    <p>
+                        Integrated contact management interface with search functionality, avatar display, 
+                        one-click calling capabilities, and seamless Odoo contact integration.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Search Function</span>
+                        <span class="feature-tag tag-green">Avatar Display</span>
+                        <span class="feature-tag tag-orange">One-click Calling</span>
+                    </div>
+                </div>
+                
+                <!-- 08.png - FreePBX Integration Configuration -->
+                <div class="screenshot-card fade-in">
+                    <img src="08.png" alt="FreePBX Integration Configuration">
+                    <h4>FreePBX Integration Configuration</h4>
+                    <p>
+                        Complete FreePBX server configuration interface showing AMI settings, Odoo integration parameters, 
+                        real-time service management, and connection status monitoring.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">AMI Settings</span>
+                        <span class="feature-tag tag-green">Service Management</span>
+                        <span class="feature-tag tag-orange">Real-time Monitoring</span>
+                    </div>
+                </div>
+                
+                <!-- 09.png - VoIP Server Configuration -->
+                <div class="screenshot-card fade-in">
+                    <img src="09.png" alt="VoIP Server Configuration">
+                    <h4>VoIP Server Configuration</h4>
+                    <p>
+                        Professional server setup interface with WebSocket configuration, STUN/TURN settings, 
+                        TLS security options, and API key management with secure credential storage.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">WebSocket</span>
+                        <span class="feature-tag tag-green">STUN/TURN</span>
+                        <span class="feature-tag tag-orange">TLS Security</span>
+                    </div>
+                </div>
+                
+                <!-- 10.png - VoIP User Management -->
+                <div class="screenshot-card fade-in">
+                    <img src="10.png" alt="VoIP User Management">
+                    <h4>VoIP User Management</h4>
+                    <p>
+                        Complete user configuration interface showing SIP credentials, recording preferences, 
+                        auto-answer settings, call statistics, and user-specific VoIP parameters.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">SIP Credentials</span>
+                        <span class="feature-tag tag-green">Recording Settings</span>
+                        <span class="feature-tag tag-orange">Call Statistics</span>
+                    </div>
+                </div>
+                
+                <!-- 11.png - Hold Music Management -->
+                <div class="screenshot-card fade-in">
+                    <img src="11.png" alt="Hold Music Management">
+                    <h4>Hold Music Management</h4>
+                    <p>
+                        Professional hold music configuration interface with audio settings, file management, 
+                        usage statistics, and customizable hold music options for enhanced caller experience.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Audio Settings</span>
+                        <span class="feature-tag tag-green">File Management</span>
+                        <span class="feature-tag tag-orange">Usage Stats</span>
+                    </div>
+                </div>
+                
+                <!-- 12.png - Call History Management -->
+                <div class="screenshot-card fade-in">
+                    <img src="12.png" alt="Call History Management">
+                    <h4>Call History Management</h4>
+                    <p>
+                        Comprehensive call history interface with advanced filtering, search capabilities, 
+                        detailed call information, duration tracking, and status monitoring.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Advanced Filtering</span>
+                        <span class="feature-tag tag-green">Search</span>
+                        <span class="feature-tag tag-orange">Duration Tracking</span>
+                    </div>
+                </div>
+                
+                <!-- 13.png - Detailed Call Information -->
+                <div class="screenshot-card fade-in">
+                    <img src="13.png" alt="Detailed Call Information">
+                    <h4>Detailed Call Information</h4>
+                    <p>
+                        Complete call details interface showing timing information, user data, technical details, 
+                        recording access, and comprehensive call analysis with status indicators.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Timing Info</span>
+                        <span class="feature-tag tag-green">User Data</span>
+                        <span class="feature-tag tag-orange">Technical Details</span>
+                    </div>
+                </div>
+                
+                <!-- 14.png - Call Recording Management -->
+                <div class="screenshot-card fade-in">
+                    <img src="14.png" alt="Call Recording Management">
+                    <h4>Call Recording Management</h4>
+                    <p>
+                        Professional call recording interface with integrated audio player, file management, 
+                        sharing capabilities, and comprehensive recording controls for quality management.
+                    </p>
+                    <div class="feature-tags">
+                        <span class="feature-tag tag-blue">Audio Player</span>
+                        <span class="feature-tag tag-green">File Management</span>
+                        <span class="feature-tag tag-orange">Sharing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Key Features Section -->
+<section class="section features-section">
+    <div class="container">
+        <h2 class="section-title gradient-text">Enterprise Features</h2>
+        
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-phone-volume"></i>
+                </div>
+                <h3>Advanced Call Management</h3>
+                <p>
+                    Complete call control with blind/attended transfer, hold music, DTMF generation, 
+                    real-time call monitoring, and seamless integration with Odoo CRM workflows.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-microphone"></i>
+                </div>
+                <h3>Professional Recording</h3>
+                <p>
+                    Enterprise-grade call recording with multiple quality levels, automatic/manual control, 
+                    secure storage, integrated audio player, and comprehensive recording analytics.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Security & Compliance</h3>
+                <p>
+                    TLS/SRTP encryption, secure credential storage, granular permissions, 
+                    audit trails, and compliance-ready architecture for enterprise environments.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <h3>User Management</h3>
+                <p>
+                    Individual SIP accounts, role-based permissions, auto-answer settings, 
+                    call statistics, and seamless integration with Odoo user management.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Analytics & Reporting</h3>
+                <p>
+                    Comprehensive call analytics, duration tracking, success rates, 
+                    call volume reports, and integration with Odoo reporting framework.
+                </p>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h3>System Integration</h3>
+                <p>
+                    Deep Odoo integration, webhook support, API management, 
+                    FreePBX/Asterisk compatibility, and extensible architecture.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- License Section -->
+<section class="section license-section">
+    <div class="container">
+        <h2 class="section-title">Commercial License</h2>
+        
+        <div class="license-grid">
+            <div class="license-card fade-in">
+                <h4><i class="fas fa-check-circle" style="margin-right: 10px;"></i>What's Included</h4>
+                <ul>
+                    <li><i class="fas fa-code"></i>Complete VoIP module source code</li>
+                    <li><i class="fas fa-database"></i>Single database license</li>
+                    <li><i class="fas fa-server"></i>FreePBX server configuration guide</li>
+                    <li><i class="fas fa-headset"></i>Technical support for setup</li>
+                    <li><i class="fas fa-shield-alt"></i>Commercial usage rights</li>
+                    <li><i class="fas fa-edit"></i>Code modification rights</li>
+                </ul>
+            </div>
+            
+            <div class="license-card fade-in">
+                <h4><i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i>License Restrictions</h4>
+                <ul>
+                    <li><i class="fas fa-ban"></i>Cannot be used in SaaS systems</li>
+                    <li><i class="fas fa-ban"></i>No redistribution rights</li>
+                    <li><i class="fas fa-ban"></i>Single database per license</li>
+                    <li><i class="fas fa-ban"></i>Cannot resell the module</li>
+                    <li><i class="fas fa-ban"></i>No multi-tenant usage</li>
+                    <li><i class="fas fa-ban"></i>Cannot use in hosted services</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="support-section">
+            <h3 style="text-align: center; margin-bottom: 30px; font-size: 1.8rem;">
+                <i class="fas fa-server" style="margin-right: 12px;"></i>FreePBX Support
+            </h3>
+            <p style="text-align: center; font-size: 1.1rem; margin-bottom: 30px;">
+                After purchase confirmation and invoice payment, we provide comprehensive support:
+            </p>
+            
+            <div class="support-grid">
+                <div class="support-item">
+                    <i class="fas fa-cog"></i>
+                    <p>FreePBX server configuration</p>
+                </div>
+                <div class="support-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <p>Security setup assistance</p>
+                </div>
+                <div class="support-item">
+                    <i class="fas fa-phone"></i>
+                    <p>SIP account creation</p>
+                </div>
+                <div class="support-item">
+                    <i class="fas fa-headset"></i>
+                    <p>Technical support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Technical Specifications -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title gradient-text">Technical Excellence</h2>
+        
+        <div class="tech-specs">
+            <div class="specs-grid">
+                <div class="spec-card fade-in">
+                    <i class="fas fa-code"></i>
+                    <h4>Clean Architecture</h4>
+                    <p>
+                        Separation of concerns with dedicated models, controllers, services, and components. 
+                        Following SOLID principles for maintainability and extensibility.
+                    </p>
+                </div>
+                
+                <div class="spec-card fade-in">
+                    <i class="fas fa-bolt"></i>
+                    <h4>WebRTC Powered</h4>
+                    <p>
+                        Built on SIP.js 0.20.0 with optimized ICE gathering, STUN/TURN support, 
+                        and automatic media stream handling for crystal-clear audio quality.
+                    </p>
+                </div>
+                
+                <div class="spec-card fade-in">
+                    <i class="fas fa-database"></i>
+                    <h4>Complete Data Model</h4>
+                    <p>
+                        Comprehensive data models for servers, users, calls, and recordings. 
+                        Full integration with Odoo's chatter, activities, and followers system.
+                    </p>
+                </div>
+                
+                <div class="spec-card fade-in">
+                    <i class="fas fa-rocket"></i>
+                    <h4>Optimized Performance</h4>
+                    <p>
+                        Lightning-fast call initiation with ICE gathering optimization (500ms instead of 5000ms). 
+                        Parallel Odoo record creation ensures instant UI response.
+                    </p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 50px; text-align: center;">
+                <h3 style="margin-bottom: 25px; font-size: 1.8rem;">Technology Stack</h3>
+                <div class="tech-stack">
+                    <div class="tech-item">WebRTC</div>
+                    <div class="tech-item">SIP.js 0.20.0</div>
+                    <div class="tech-item">FreePBX</div>
+                    <div class="tech-item">Asterisk</div>
+                    <div class="tech-item">OWL Components</div>
+                    <div class="tech-item">Web Audio API</div>
+                    <div class="tech-item">Call Transfer</div>
+                    <div class="tech-item">Hold Music</div>
+                    <div class="tech-item">API Keys</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title gradient-text">Get in Touch</h2>
+        
+        <div class="contact-section">
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <strong>Email:</strong> kenzey0man@gmail.com
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <strong>Phone:</strong> +20 100 057 3614
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-clock"></i>
+                    <strong>Support Hours:</strong> Mon-Fri: 9AM-6PM (Cairo Time)
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-globe"></i>
+                    <strong>Website:</strong> <a href="https://odoo-vip.com" style="color: var(--primary-color); font-weight: 600;">odoo-vip.com</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<section class="section">
+    <div class="container">
+        <div class="footer">
+            <h3 style="text-align: center; margin-bottom: 40px; font-size: 2rem; font-weight: 600;">
+                VoIP WebRTC FreePBX for Odoo 18
+            </h3>
+            
+            <div class="footer-grid">
+                <div class="footer-card">
+                    <h4>Version</h4>
+                    <p>18.0.1.0.1</p>
+                </div>
+                
+                <div class="footer-card">
+                    <h4>License</h4>
+                    <p>Commercial</p>
+                </div>
+                
+                <div class="footer-card">
+                    <h4>Author</h4>
+                    <p>Mohamed Samir</p>
+                </div>
+                
+                <div class="footer-card">
+                    <h4>Support</h4>
+                    <p>Included</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid rgba(255, 255, 255, 0.3); text-align: center;">
+                <p style="font-size: 1.1rem; opacity: 0.95; margin-bottom: 10px;">
+                    Maintained by <strong>odoo-vip.com</strong>
+                </p>
+                <p style="font-size: 1rem; opacity: 0.8;">
+                    © 2025 Mohamed Samir. All Rights Reserved.
+                </p>
+                <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 15px;">
+                    Commercial License - Single Database Use Only. Cannot be used in SaaS systems. 
+                    For support, customization, or inquiries, contact us at kenzey0man@gmail.com
+                </p>
+                <div style="margin-top: 20px;">
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 10px; display: inline-block;">
+                        <strong>Important:</strong> This module requires a commercial license for single database use. 
+                        FreePBX server configuration support provided after purchase confirmation.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Fade in animation on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

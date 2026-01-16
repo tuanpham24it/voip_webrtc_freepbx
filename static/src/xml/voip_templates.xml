@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- VoIP Header Component -->
+    <t t-name="voip_webrtc_freepbx.VoipHeader">
+                <div class="o_voip_dialer_header">
+                    <div class="o_voip_header_content">
+                        <div class="o_voip_header_left" t-on-mousedown.stop="startDrag">
+                            <div class="o_voip_header_icon">
+                                <i class="oi oi-large oi-voip"/>
+                            </div>
+                            <div class="o_voip_header_info">
+                                <span class="o_voip_header_title">VoIP Phone</span>
+                                <span class="o_voip_header_status" t-if="state.isRegistered">
+                                    <i class="fa fa-circle o_voip_status_dot"/>
+                                    Ready
+                                </span>
+                                <span class="o_voip_header_status o_voip_offline" t-else="">
+                                    <i class="fa fa-circle o_voip_status_dot"/>
+                                    Offline
+                                </span>
+                            </div>
+                        </div>
+                        <div class="o_voip_header_actions">
+                            <button class="o_voip_header_btn" t-on-click.stop="toggleMinimize" title="Close">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+    </t>
+
+    <!-- VoIP Incoming Call Component -->
+    <t t-name="voip_webrtc_freepbx.VoipIncomingCall">
+        <div class="o_voip_incoming_call_display">
+
+            <!-- Top Section -->
+            <div class="o_voip_call_top">
+                <!-- Avatar with Ring Animation -->
+                <div class="o_voip_call_avatar o_voip_incoming_avatar">
+                    <div class="o_voip_avatar_icon">
+                        <i class="fa fa-phone o_voip_ring_icon"/>
+                    </div>
+                </div>
+
+                <!-- Incoming Call Info -->
+                <div class="o_voip_contact_name_number">
+                    <t t-esc="state.incomingCallNumber"/>
+                </div>
+
+                <!-- Call Status -->
+                <div class="o_voip_call_status">
+                    <t t-if="state.inCall">مكالمة واردة أثناء المكالمة النشطة</t>
+                    <t t-else="">Incoming Call...</t>
+                </div>
+
+                <!-- Call Time -->
+                <div class="o_voip_call_timer">
+                    <i class="fa fa-clock-o"/>
+                    <t t-esc="state.incomingCallTime"/>
+                </div>
+            </div>
+
+            <!-- Call Actions -->
+            <div class="o_voip_incoming_actions">
+                <button class="o_voip_answer_btn" t-on-click="() => this.answerCall()">
+                    <i class="fa fa-phone"/>
+                    <span>Answer</span>
+                </button>
+                <button class="o_voip_decline_btn" t-on-click="() => this.declineCall()">
+                    <i class="fa fa-phone o_voip_decline_icon"/>
+                    <span>Decline</span>
+                </button>
+            </div>
+
+            <!-- Mute Controls -->
+            <div class="o_voip_incoming_mute_controls"></div>
+
+        </div>
+    </t>
+
+    <!-- VoIP Active Call Component -->
+    <t t-name="voip_webrtc_freepbx.VoipActiveCall">
+        <div class="o_voip_call_screen">
+                                <!-- Hold Music Indicator -->
+                                <div t-if="state.holdMusicPlaying" class="o_voip_music_indicator">
+                                    <i class="fa fa-music"/>
+                                    <span>Hold Music Playing</span>
+                                </div>
+                                
+                                <!-- Wave Animation -->
+                                <div class="o_voip_call_waves">
+                                    <div class="o_voip_wave"></div>
+                                    <div class="o_voip_wave"></div>
+                                    <div class="o_voip_wave"></div>
+                                </div>
+
+                                <!-- Top Section -->
+                                <div class="o_voip_call_top">
+                                    <!-- Avatar -->
+                                    <div class="o_voip_call_avatar">
+                                        <div class="o_voip_avatar_icon">
+                                            <i class="fa fa-user"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contact Info -->
+                                    <div class="o_voip_contact_name">
+                                        <t t-esc="state.phoneNumber"/>
+                                    </div>
+
+                <!-- Call Status -->
+                <div class="o_voip_call_status">
+                    <t t-if="state.isOnHold">On Hold</t>
+                    <t t-else="">Connected</t>
+                </div>
+
+                                    <!-- Timer -->
+                                    <div class="o_voip_call_timer">
+                                        <i class="fa fa-clock-o"/>
+                                        <t t-esc="formattedDuration"/>
+                                    </div>
+                                </div>
+
+                                <!-- Active Call Tabs -->
+                                <div class="o_voip_active_call_tabs_container">
+                <t t-call="voip_webrtc_freepbx.VoipActiveCallTabs"/>
+            </div>
+        </div>
+    </t>
+
+    <!-- VoIP Active Call Tabs Component -->
+    <t t-name="voip_webrtc_freepbx.VoipActiveCallTabs">
+                <div class="o_voip_active_call_tab_content">
+                    <!-- Call Controls Tab -->
+                <div t-if="state.activeCallTab === 'controls'" class="o_voip_call_controls_tab">
+                  <t t-call="voip_webrtc_freepbx.VoipCallControls"/>
+                </div>
+
+            <!-- Transfer Tab -->
+            <div t-if="state.activeCallTab === 'transfer'" class="o_voip_transfer_tab">
+                <t t-call="voip_webrtc_freepbx.VoipTransferTab"/>
+            </div>
+
+            <!-- Hold Music Tab -->
+            <div t-if="state.activeCallTab === 'hold'" class="o_voip_hold_music_tab">
+                <t t-call="voip_webrtc_freepbx.VoipHoldMusicTab"/>
+            </div>
+        </div>
+    </t>
+
+    <!-- VoIP Call Controls Component -->
+    <t t-name="voip_webrtc_freepbx.VoipCallControls">
+        <!-- Control Buttons Row - First Row (3 buttons) -->
+        <div class="o_voip_control_row">
+            <button class="o_voip_control_btn"
+                    t-att-class="{'o_voip_btn_active': state.isMuted}"
+                    t-on-click="toggleMute"
+                    title="Mute">
+                <div class="o_voip_control_icon">
+                    <i t-att-class="state.isMuted ? 'fa fa-microphone-slash' : 'fa fa-microphone'"/>
+                </div>
+                <div class="o_voip_control_label">
+                    <t t-if="state.isMuted">Unmute</t>
+                    <t t-else="">Mute</t>
+                </div>
+            </button>
+
+            <!-- Hangup Button -->
+            <button class="o_voip_control_btn o_voip_hangup_btn"
+                    t-on-click="hangup"
+                    title="Hang">
+                <div class="o_voip_control_icon">
+                    <i class="fa fa-phone"/>
+                </div>
+                <div class="o_voip_control_label">Hang Up</div>
+            </button>
+
+
+            <!-- Transfer Button with Enhanced Dropdown -->
+            <div class="o_voip_transfer_dropdown_container">
+                <button class="o_voip_control_btn o_voip_transfer_btn"
+                        t-att-class="{'o_voip_btn_active': state.showTransferDropdown}"
+                        t-on-click="() => this.toggleTransferDropdown()"
+                        title="Transfer Call">
+                    <div class="o_voip_control_icon">
+                        <i class="fa fa-share-alt"/>
+                    </div>
+                    <div class="o_voip_control_label">Transfer</div>
+                </button>
+
+                <!-- Enhanced Transfer Dropdown -->
+                <div t-if="state.showTransferDropdown"
+                     class="o_voip_transfer_dropdown">
+                    <div class="o_voip_transfer_dropdown_header">
+                        <div class="o_voip_transfer_header_content">
+                            <div class="o_voip_transfer_header_icon">
+                                <i class="fa fa-users"/>
+                            </div>
+                            <div class="o_voip_transfer_header_text">
+                                <h4>Transfer Call</h4>
+                                <p>Select a user to transfer to</p>
+                            </div>
+                        </div>
+                        <button class="o_voip_transfer_close_btn"
+                                t-on-click="() => this.toggleTransferDropdown()"
+                                title="Close">
+                            <i class="fa fa-times"/>
+                        </button>
+                    </div>
+
+                    <div class="o_voip_transfer_dropdown_content">
+                        <!-- Search Bar -->
+                        <div class="o_voip_transfer_search_container">
+                            <div class="o_voip_transfer_search_input">
+                                <i class="fa fa-search"/>
+                                <input type="text"
+                                       placeholder="Search users..."
+                                       class="o_voip_transfer_search_field"
+                                       t-model="state.transferSearchQuery"
+                                       t-on-keyup="onTransferSearchKeyup"/>
+                            </div>
+                        </div>
+
+                        <!-- Users List -->
+                        <div class="o_voip_transfer_users_container">
+                            <div t-if="!filteredTransferUsers || filteredTransferUsers.length === 0"
+                                 class="o_voip_transfer_empty_state">
+                                <div class="o_voip_transfer_empty_icon">
+                                    <i class="fa fa-user-slash"/>
+                                </div>
+                                <div class="o_voip_transfer_empty_text">
+                                    <h4 t-if="!state.transferSearchQuery">No Users Available</h4>
+                                    <h4 t-if="state.transferSearchQuery">No Users Found</h4>
+                                    <p t-if="!state.transferSearchQuery">There are no users available for transfer</p>
+                                    <p t-if="state.transferSearchQuery">No users match your search criteria</p>
+                                </div>
+                            </div>
+
+                            <div t-foreach="filteredTransferUsers" t-as="user" t-key="user.id"
+                                 t-if="filteredTransferUsers"
+                                 class="o_voip_transfer_user_card"
+                                 t-on-click="() => this.transferCall(user)">
+                                <div class="o_voip_transfer_user_card_content">
+                                    <div class="o_voip_transfer_user_avatar_container">
+                                        <div class="o_voip_transfer_user_avatar"
+                                             t-att-class="'o_voip_user_status_' + (user.status || 'offline')">
+                                            <i class="fa fa-user"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="o_voip_transfer_user_info_container">
+                                        <div class="o_voip_transfer_user_name">
+                                            <t t-esc="user.name"/>
+                                        </div>
+                                        <div class="o_voip_transfer_user_details">
+                                            <div class="o_voip_transfer_user_extension">
+                                                <i class="fa fa-phone"/>
+                                                <span><t t-esc="user.sip_username"/></span>
+                                            </div>
+                                            <div class="o_voip_transfer_user_server" t-if="user.server_name">
+                                                <i class="fa fa-server"/>
+                                                <span><t t-esc="user.server_name"/></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="o_voip_transfer_user_action">
+                                        <div class="o_voip_transfer_user_action_btn">
+                                            <i class="fa fa-share"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Buttons Row - Second Row (3 buttons) -->
+        <div class="o_voip_control_row">
+        <!-- Hold/Resume Button -->
+        <button class="o_voip_control_btn"
+                t-att-class="{'o_voip_btn_active': state.isOnHold}"
+                t-on-click="() => state.isOnHold ? this.resumeCall() : this.holdCurrentCall()"
+                title="Hold/Resume">
+            <div class="o_voip_control_icon">
+                <i t-att-class="state.isOnHold ? 'fa fa-play' : 'fa fa-pause'"/>
+            </div>
+            <div class="o_voip_control_label">
+                <t t-if="state.isOnHold">Resume</t>
+                <t t-else="">Hold</t>
+            </div>
+        </button>
+
+        <!-- Hold Music Button -->
+        <button class="o_voip_control_btn"
+                t-on-click="showHoldMusicMenu"
+                title="Hold Music">
+            <div class="o_voip_control_icon">
+                <i class="fa fa-music"/>
+            </div>
+            <div class="o_voip_control_label">Music</div>
+        </button>
+
+        <!-- Auto Recording Button -->
+        <button t-if="!state.canControlRecording and state.autoStartRecording"
+                class="o_voip_control_btn o_voip_auto_rec"
+                title="Auto Recording">
+            <div class="o_voip_control_icon">
+                <i class="fa fa-lock"/>
+            </div>
+            <div class="o_voip_control_label">Auto Rec</div>
+        </button>
+
+        <!-- Recording Status Button -->
+        <button t-elif="state.isRecording"
+                class="o_voip_control_btn o_voip_recording_status"
+                title="Recording">
+            <div class="o_voip_control_icon">
+                <i class="fa fa-circle o_voip_rec_indicator"/>
+            </div>
+            <div class="o_voip_control_label">Recording</div>
+        </button>
+
+        <!-- Record Button -->
+        <button t-elif="state.canControlRecording"
+                class="o_voip_control_btn"
+                t-att-class="{'o_voip_btn_active': state.isRecording}"
+                t-on-click="() => state.isRecording ? this.stopRecording() : this.startRecording()"
+                title="Record">
+            <div class="o_voip_control_icon">
+                <i t-att-class="state.isRecording ? 'fa fa-stop' : 'fa fa-circle'"/>
+            </div>
+            <div class="o_voip_control_label">
+                <t t-if="state.isRecording">Stop Rec</t>
+                <t t-else="">Record</t>
+            </div>
+        </button>
+
+        <!-- Empty space for alignment -->
+        <div t-else="" class="o_voip_control_btn o_voip_empty_btn">
+            <div class="o_voip_control_icon">
+                <i class="fa fa-circle" style="opacity: 0;"/>
+            </div>
+            <div class="o_voip_control_label" style="opacity: 0;">Empty</div>
+        </div>
+        </div>
+    </t>
+
+    <!-- VoIP Transfer Tab Component -->
+    <t t-name="voip_webrtc_freepbx.VoipTransferTab">
+        <!-- Search Box -->
+        <div class="o_voip_transfer_search">
+            <input type="text"
+                   class="form-control"
+                   placeholder="Search users..."
+                   t-model="state.transferSearchQuery"/>
+        </div>
+
+        <!-- Users List -->
+        <div class="o_voip_transfer_users_list">
+            <div t-if="!filteredTransferUsers || filteredTransferUsers.length === 0"
+                 class="o_voip_transfer_empty">
+                <i class="fa fa-users"/>
+                <p>No users found</p>
+            </div>
+            <t t-foreach="filteredTransferUsers" t-as="user" t-key="user.id"
+               t-if="filteredTransferUsers">
+                <div class="o_voip_transfer_user_item">
+                    <div class="o_voip_transfer_user_avatar"
+                         t-att-class="user.status">
+                        <t t-esc="user.name[0].toUpperCase()"/>
+                    </div>
+                    <div class="o_voip_transfer_user_info">
+                        <div class="o_voip_transfer_user_name">
+                            <t t-esc="user.name"/>
+                        </div>
+                        <div class="o_voip_transfer_user_ext">
+                            SIP: <t t-esc="user.sip_username"/>
+                        </div>
+                        <div class="o_voip_transfer_user_server" t-if="user.server_name">
+                            <i class="fa fa-server"/> <t t-esc="user.server_name"/>
+                        </div>
+                        <div class="o_voip_transfer_user_status">
+                            <i t-att-class="user.status === 'available' ? 'fa fa-circle text-success' : 'fa fa-circle text-danger'"/>
+                            <t t-esc="user.status"/>
+                        </div>
+                    </div>
+                    <button class="o_voip_transfer_user_btn"
+                            t-on-click="() => this.transferCall(user)"
+                            title="Transfer Call">
+                        <i class="fa fa-arrow-right"/>
+                    </button>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <!-- Hold Music Menu Dropdown -->
+    <t t-name="voip_webrtc_freepbx.VoipHoldMusicMenu">
+        <div class="o_voip_hold_music_menu" t-if="state.showHoldMusicMenu">
+            <div class="o_voip_hold_music_menu_header">
+                <h4><i class="fa fa-music"/> Hold Music</h4>
+                <button class="o_voip_close_btn" t-on-click="closeHoldMusicMenu">
+                    <i class="fa fa-times"/>
+                </button>
+            </div>
+            
+            <div class="o_voip_hold_music_options">
+                <div t-if="!state.holdMusicOptions || state.holdMusicOptions.length === 0" 
+                     class="o_voip_hold_music_empty">
+                    <i class="fa fa-music"/>
+                    <p>No hold music available</p>
+                </div>
+                <div t-else="" 
+                     class="o_voip_hold_music_option" 
+                     t-foreach="state.holdMusicOptions" 
+                     t-as="music"
+                     t-key="music.id"
+                     t-on-click="() => this.selectHoldMusic(music.id)"
+                     t-att-class="{'o_voip_music_selected': state.selectedMusicId === music.id}">
+                    <div class="o_voip_music_icon">
+                        <i class="fa fa-music"/>
+                    </div>
+                    <div class="o_voip_music_info">
+                        <div class="o_voip_music_name" t-esc="music.name"/>
+                        <div class="o_voip_music_description" t-esc="music.description"/>
+                    </div>
+                    <div class="o_voip_music_status" t-if="state.selectedMusicId === music.id">
+                        <i class="fa fa-check"/>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="o_voip_hold_music_controls">
+                <!-- <div class="o_voip_volume_control">
+                    <label>Volume:</label>
+                    <input type="range" 
+                           min="0" 
+                           max="100" 
+                           t-model="state.holdMusicVolume"
+                           t-on-change="updateHoldMusicVolume"/>
+                    <span t-esc="state.holdMusicVolume + '%'"/>
+                </div> -->
+                
+                <div class="o_voip_hold_music_actions">
+                    <button class="o_voip_btn o_voip_btn_primary" 
+                            t-on-click="startHoldMusic"
+                            t-att-disabled="!state.selectedMusicId">
+                        <i class="fa fa-play"/> Start Music
+                    </button>
+                    <button class="o_voip_btn o_voip_btn_secondary" 
+                            t-on-click="stopHoldMusic">
+                        <i class="fa fa-stop"/> Stop Music
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- VoIP Hold Music Tab Component -->
+    <t t-name="voip_webrtc_freepbx.VoipHoldMusicTab">
+        <!-- Current Hold Music -->
+        <div class="o_voip_current_hold_music">
+            <div class="o_voip_hold_music_info">
+                <div class="o_voip_hold_music_name">
+                    <i class="fa fa-music"/>
+                    <t t-esc="state.currentHoldMusic.name || 'No music selected'"/>
+                </div>
+                <div class="o_voip_hold_music_server">
+                    Server: <t t-esc="state.currentHoldMusic.server || 'N/A'"/>
+                </div>
+            </div>
+
+            <!-- Music Controls -->
+            <div class="o_voip_hold_music_controls">
+                <button class="o_voip_hold_play_btn"
+                        t-att-class="{'o_voip_btn_active': state.holdMusicPlaying}"
+                        t-on-click="() => this.toggleHoldMusic()"
+                        title="Play/Stop Hold Music">
+                    <i t-att-class="state.holdMusicPlaying ? 'fa fa-stop' : 'fa fa-play'"/>
+                    <span t-if="state.holdMusicPlaying">Stop</span>
+                    <span t-else="">Play</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Hold Music List -->
+        <div class="o_voip_hold_music_list">
+            <div class="o_voip_hold_music_header">
+                <span>Available Hold Music</span>
+            </div>
+
+            <div t-if="state.holdMusicList.length === 0"
+                 class="o_voip_hold_music_empty">
+                <i class="fa fa-music"/>
+                <p>No hold music configured</p>
+            </div>
+
+            <t t-foreach="state.holdMusicList" t-as="music" t-key="music.id">
+                <div class="o_voip_hold_music_item"
+                     t-att-class="{'o_voip_selected': music.id === state.selectedHoldMusic}">
+                    <div class="o_voip_hold_music_icon">
+                        <i class="fa fa-music"/>
+                    </div>
+                    <div class="o_voip_hold_music_details">
+                        <div class="o_voip_hold_music_title">
+                            <t t-esc="music.name"/>
+                        </div>
+                        <div class="o_voip_hold_music_server">
+                            <t t-esc="music.server"/>
+                        </div>
+                    </div>
+                    <button class="o_voip_hold_music_select_btn"
+                            t-on-click="() => this.selectHoldMusic(music)"
+                            title="Select Music">
+                        <i class="fa fa-check"/>
+                    </button>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <!-- VoIP Dialer Tab Component -->
+    <t t-name="voip_webrtc_freepbx.VoipDialerTab">
+        <div class="o_voip_dialer_body">
+                            <!-- Phone Number Input -->
+                            <div class="o_voip_number_display">
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="Enter phone number"
+                                       t-model="state.phoneNumber"
+                                       t-on-input="onPhoneNumberInput"/>
+                            </div>
+
+                            <!-- Dial Pad -->
+                            <div class="o_voip_dialpad">
+                                <div class="o_voip_dialpad_row">
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('1')">1</button>
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('2')">2</button>
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('3')">3</button>
+                                </div>
+                                <div class="o_voip_dialpad_row">
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('4')">4</button>
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('5')">5</button>
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('6')">6</button>
+                                </div>
+                                <div class="o_voip_dialpad_row">
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('7')">7</button>
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('8')">8</button>
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('9')">9</button>
+                                </div>
+                                <div class="o_voip_dialpad_row">
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('*')">*</button>
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('0')">0</button>
+                                    <button class="btn btn-light" t-on-click="() => this.addDigit('#')">#</button>
+                                </div>
+                            </div>
+
+                            <!-- Call Actions -->
+                            <div class="o_voip_actions">
+                                <button class="btn btn-secondary" t-on-click="backspace">
+                                    <i class="fa fa-backspace"/>
+                                </button>
+                                <button class="btn btn-success flex-grow-1"
+                                        t-on-click="makeCall"
+                                        t-att-disabled="!state.phoneNumber or !state.isRegistered">
+                                    <i class="fa fa-phone"/>
+                                    Call
+                                </button>
+                            </div>
+                        </div>
+    </t>
+
+    <!-- VoIP History Tab Component -->
+    <t t-name="voip_webrtc_freepbx.VoipHistoryTab">
+        <div class="o_voip_history_screen">
+            <div t-if="state.recentCalls.length === 0" class="text-center text-muted p-4">
+                <i class="fa fa-history fa-3x mb-3"/>
+                <p>No call history</p>
+            </div>
+
+            <t t-foreach="state.recentCalls" t-as="call" t-key="call.id">
+            <div class="o_voip_history_item"
+                 t-on-click="() => this.callRecent(call.direction === 'inbound' ? call.from_number : call.to_number)">
+                <div class="o_voip_history_avatar">
+                <div class="o_voip_avatar_circle"
+                     t-att-class="call.direction === 'inbound' ? 'o_voip_incoming' : 'o_voip_outgoing'">
+                <i t-att-class="call.direction === 'inbound' ? 'fa fa-arrow-down' : 'fa fa-arrow-up'"/>
+                </div>
+            </div>
+
+                <div class="o_voip_history_content">
+            <div class="o_voip_history_header">
+            <div class="o_voip_history_name">
+            <t t-if="call.partner_name">
+            <span class="fw-bold" t-esc="call.partner_name"/>
+            </t>
+                <t t-elif="call.name">
+            <span class="fw-bold" t-esc="call.name"/>
+            </t>
+                <t t-else="">
+            <span class="fw-bold"
+                  t-esc="call.direction === 'inbound' ? call.from_number : call.to_number"/>
+            </t>
+                <div class="o_voip_call_id text-muted small">
+            <t t-esc="'(CALL/' + ('00000' + call.id).slice(-5) + ')'"/>
+            </div>
+            </div>
+                <div class="o_voip_history_duration">
+            <i class="fa fa-clock-o me-1"/>
+                    <t t-esc="call.duration_display"/>
+            </div>
+            </div>
+
+                    <div class="o_voip_history_details">
+            <div class="o_voip_detail_item">
+            <i class="fa fa-phone me-1"/>
+                <span t-esc="call.direction === 'inbound' ? call.from_number : call.to_number"/>
+            </div>
+                        <div class="o_voip_detail_item">
+            <i class="fa fa-calendar me-1"/>
+                            <span t-esc="call.start_time"/>
+            </div>
+            </div>
+
+                    <div class="o_voip_history_badges">
+            <span class="badge" t-att-class="'badge-' + call.state">
+            <t t-esc="call.state"/>
+            </span>
+                        <t t-if="call.has_recording">
+            <span class="badge badge-recording">
+            <i class="fa fa-circle me-1"/>
+                Recording
+            </span>
+            </t>
+            </div>
+            </div>
+            </div>
+            </t>
+        </div>
+    </t>
+
+    <!-- VoIP Contacts Tab Component -->
+    <t t-name="voip_webrtc_freepbx.VoipContactsTab">
+        <div class="o_voip_contacts_screen">
+                            <!-- Search Box -->
+                            <div class="o_voip_search_box mb-3">
+                                <input type="text"
+                                       class="form-control"
+                                       placeholder="Search contacts..."
+                                       t-model="state.searchQuery"/>
+                            </div>
+
+                            <!-- Contacts List -->
+                            <div class="o_voip_contacts_list">
+                                <div t-if="!filteredContacts || filteredContacts.length === 0"
+                                     class="text-center text-muted p-4">
+                                    <i class="fa fa-users fa-3x mb-3"/>
+                                    <p>No contacts found</p>
+                                </div>
+                                <t t-foreach="filteredContacts" t-as="contact" t-key="contact.id"
+                                   t-if="filteredContacts">
+                                    <div class="o_voip_contact_item">
+                                        <div class="o_voip_contact_avatar">
+                                            <t t-esc="contact.name[0].toUpperCase()"/>
+                                        </div>
+                                        <div class="o_voip_contact_info">
+                                            <div class="o_voip_contact_name">
+                                                <t t-esc="contact.name"/>
+                                            </div>
+                                            <div class="o_voip_contact_phone">
+                                                <t t-esc="contact.phone"/>
+                                            </div>
+                                        </div>
+                                        <button class="o_voip_quick_call_btn"
+                                                t-on-click="() => this.callContact(contact.phone)">
+                                            <i class="fa fa-phone"/>
+                                        </button>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+    </t>
+
+    <!-- VoIP Bottom Tabs Component -->
+    <t t-name="voip_webrtc_freepbx.VoipBottomTabs">
+                    <div class="o_voip_bottom_tabs">
+                        <button class="o_voip_tab"
+                                t-att-class="{'active': state.activeTab === 'dialer'}"
+                                t-on-click="() => this.switchTab('dialer')">
+                            <i class="fa fa-phone"/>
+                            <span>Dialer</span>
+                        </button>
+                        <button class="o_voip_tab"
+                                t-att-class="{'active': state.activeTab === 'active'}"
+                                t-on-click="() => this.switchTab('active')">
+                            <i class="fa fa-phone"/>
+                            <span>Active</span>
+                        </button>
+                        <button class="o_voip_tab"
+                                t-att-class="{'active': state.activeTab === 'history'}"
+                                t-on-click="() => this.switchTab('history')">
+                            <i class="fa fa-history"/>
+                            <span>History</span>
+                        </button>
+                        <button class="o_voip_tab"
+                                t-att-class="{'active': state.activeTab === 'contacts'}"
+                                t-on-click="() => this.switchTab('contacts')">
+                            <i class="fa fa-users"/>
+                            <span>Contacts</span>
+                        </button>
+                    </div>
+    </t>
+
+    <!-- VoIP Systray Template with Tabs -->
+    <t t-name="voip_webrtc_freepbx.VoipSystray" owl="1">
+        <div class="o_voip_systray dropdown" t-att-class="{'show': state.showDialer}">
+            <!-- Systray Icon -->
+            <button class="dropdown-toggle btn btn-secondary o-no-caret"
+                    t-on-click.stop="toggleDialer"
+                    t-att-class="{'o_voip_registered': state.isRegistered, 'o_voip_in_call': state.inCall}"
+                    title="VoIP">
+                <i class="oi oi-large oi-voip" t-att-class="{'fa-phone-square': state.inCall}"/>
+                <span t-if="state.inCall" class="badge badge-danger o_voip_call_badge">
+                    <t t-esc="formattedDuration"/>
+                </span>
+            </button>
+
+            <!-- Dialer Dropdown with Tabs -->
+            <div class="dropdown-menu o_voip_phone_container"
+                 t-att-class="{'show': state.showDialer, 'o_voip_dragging': state.isDragging}"
+                 t-att-style="dialerStyle"
+                 t-on-click.stop="() => {}">
+                
+                <!-- Header Component -->
+                <t t-call="voip_webrtc_freepbx.VoipHeader"/>
+
+                <!-- Tabs and Content -->
+                <div class="o_voip_tabs_container">
+                    <!-- Tab Content -->
+                    <div class="o_voip_tab_content">
+                        <!-- Active Call Tab (Merged with Incoming) -->
+                        <div t-if="state.activeTab === 'active'" class="o_voip_active_call_tab_main">
+                            <!-- Incoming Call Display (Priority over active call) -->
+                            <div t-if="state.incomingCall">
+                                <t t-call="voip_webrtc_freepbx.VoipIncomingCall"/>
+                            </div>
+
+                            <!-- Active Call Display -->
+                            <div t-elif="state.inCall">
+                                <t t-call="voip_webrtc_freepbx.VoipActiveCall"/>
+                                <!-- Hold Music Menu -->
+                                <t t-call="voip_webrtc_freepbx.VoipHoldMusicMenu"/>
+                            </div>
+
+                            <!-- No Active Call -->
+                            <div t-else="" class="o_voip_no_active_call">
+                                <div class="o_voip_no_active_icon">
+                                    <i class="fa fa-phone"/>
+                                </div>
+                                <div class="o_voip_no_active_text">
+                                    <h4>No Active Call</h4>
+                                    <p>Make a call to see controls here...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dialer Tab -->
+                        <div t-if="state.activeTab === 'dialer'">
+                            <t t-call="voip_webrtc_freepbx.VoipDialerTab"/>
+                        </div>
+
+                        <!-- History Tab -->
+                        <div t-if="state.activeTab === 'history'">
+                            <t t-call="voip_webrtc_freepbx.VoipHistoryTab"/>
+                        </div>
+
+                        <!-- Contacts Tab -->
+                        <div t-if="state.activeTab === 'contacts'">
+                            <t t-call="voip_webrtc_freepbx.VoipContactsTab"/>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Tabs -->
+                    <t t-call="voip_webrtc_freepbx.VoipBottomTabs"/>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

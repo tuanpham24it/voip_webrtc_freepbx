@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="debug_test_page" name="VoIP Debug Test">
+        <t t-call="web.html_container">
+            <div class="o_voip_debug">
+                <div class="container">
+                    <h1>🔧 اختبار نظام VoIP</h1>
+                    
+                    <div class="test-section">
+                        <h3>1. اختبار النقاط</h3>
+                        <button class="btn btn-primary" onclick="testDebugEndpoint()">اختبار النقطة البسيطة</button>
+                        <button class="btn btn-primary" onclick="testModelsEndpoint()">اختبار النماذج</button>
+                        <button class="btn btn-primary" onclick="testConfigEndpoint()">اختبار التكوين</button>
+                    </div>
+                    
+                    <div class="test-section">
+                        <h3>2. النتائج</h3>
+                        <div id="testResults" class="results"></div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    
+    <template id="debug_test_assets" name="VoIP Debug Test Assets">
+        <t t-call="web.assets_common">
+            <t t-call="web.assets_backend">
+                <link rel="stylesheet" type="text/css" href="/voip_webrtc_freepbx/static/src/css/voip_style.css"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+
+
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="voip_webrtc_freepbx.VoipAudioPlayer"
+       t-inherit="web.UrlField"
+       t-inherit-mode="primary"
+       owl="1"
+    >
+        <xpath expr="//t[@t-if='props.readonly']" position="replace">
+            <t t-if='props.readonly'>
+                <div t-if="props.record.data[props.name]" class="o_voip_audio_player_container"
+                     style="width: 500px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;">
+                    <div style="margin-bottom: 15px;">
+                        <i class="fa fa-music fa-2x" style="color: white;"/>
+                    </div>
+                    <audio controls="controls" preload="metadata"
+                           style="width: 400px; max-width: 600px; margin: 0 auto; display: block;">
+                        <source t-att-src="props.record.data[props.name]" type="audio/webm"/>
+                        <source t-att-src="props.record.data[props.name]" type="audio/mp4"/>
+                        Your browser does not support the audio element.
+                    </audio>
+                    <div style="margin-top: 15px; color: white; font-size: 12px;">
+                        <i class="fa fa-headphones"/>
+                        Use the player controls to play, pause, and adjust volume
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- VoIP Server Form View -->
+        <record id="view_voip_server_form" model="ir.ui.view">
+            <field name="name">voip.server.form</field>
+            <field name="model">voip.server</field>
+            <field name="arch" type="xml">
+                <form string="VoIP Server">
+                    <header>
+                        <button name="action_test_connection" type="object" string="Test Connection" class="oe_highlight"/>
+                        <button name="action_regenerate_api_key" type="object" string="Regenerate API Key" confirm="This will generate a new API key. You will need to update your FreePBX webhook configuration. Are you sure?"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_users" type="object" class="oe_stat_button" icon="fa-users">
+                                <field name="user_count" widget="statinfo" string="Users"/>
+                            </button>
+                            <button name="action_view_calls" type="object" class="oe_stat_button" icon="fa-phone">
+                                <field name="call_count" widget="statinfo" string="Calls"/>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Server Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="server_info" string="Server Information">
+                                <field name="host" placeholder="e.g., pbx.example.com"/>
+                                <field name="websocket_url" placeholder="wss://pbx.example.com:8089/ws"/>
+                                
+                                <!-- API Key with inline action buttons -->
+                                <label for="api_key" string="API Key"/>
+                                <div class="o_row">
+                                    <field name="api_key" password="True" placeholder="Auto-generated API key" class="oe_inline" style="width: 70%;"/>
+                                    <button name="%(action_show_api_key)d" 
+                                            type="action" 
+                                            icon="fa-eye" 
+                                            title="Show/Hide API Key"
+                                            class="btn-link"
+                                            context="{'default_server_id': id}"/>
+                                    <button name="action_regenerate_api_key" 
+                                            type="object" 
+                                            icon="fa-refresh" 
+                                            title="Regenerate API Key"
+                                            class="btn-link"
+                                            confirm="This will generate a new API key. You will need to update your FreePBX webhook configuration. Are you sure?"/>
+                                    <button name="action_copy_api_key" 
+                                            type="object" 
+                                            icon="fa-clipboard" 
+                                            title="Copy API Key to Clipboard"
+                                            class="btn-link"/>
+                                </div>
+                                
+                                <field name="port"/>
+                                <field name="secure_port"/>
+                                <field name="use_tls"/>
+                                <field name="realm" placeholder="Optional SIP realm"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group name="recording_config" string="Recording Configuration">
+                                <field name="enable_recording"/>
+                                <field name="recording_path" invisible="not enable_recording"/>
+                            </group>
+                            <group name="other" string="Other">
+                                <field name="logging_mode"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="active"/>
+                            </group>
+                            <group name="hold_music_config" string="Hold Music Configuration">
+                                <field name="hold_music_config" 
+                                       widget="text" 
+                                       placeholder='{"music_files": [{"id": "1", "name": "Classical Music", "file_path": "/var/lib/asterisk/moh/classical.wav"}, {"id": "2", "name": "Jazz Music", "file_path": "/var/lib/asterisk/moh/jazz.wav"}]}'
+                                       help="JSON configuration for hold music files. Each music file should have id, name, and file_path."/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes" name="notes">
+                                <field name="notes" placeholder="Additional notes about this server..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- VoIP Server List View -->
+        <record id="view_voip_server_tree" model="ir.ui.view">
+            <field name="name">voip.server.tree</field>
+            <field name="model">voip.server</field>
+            <field name="arch" type="xml">
+                <list string="VoIP Servers">
+                    <field name="name"/>
+                    <field name="host"/>
+                    <field name="websocket_url"/>
+                    <field name="api_key" password="True" optional="hide"/>
+                    <field name="user_count"/>
+                    <field name="call_count"/>
+                    <field name="enable_recording"/>
+                    <field name="logging_mode"/>
+                    <field name="active"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- VoIP Server Search View -->
+        <record id="view_voip_server_search" model="ir.ui.view">
+            <field name="name">voip.server.search</field>
+            <field name="model">voip.server</field>
+            <field name="arch" type="xml">
+                <search string="VoIP Servers">
+                    <field name="name"/>
+                    <field name="host"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <filter string="Recording Enabled" name="recording_enabled" domain="[('enable_recording', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Company" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- VoIP Server Action -->
+        <record id="action_voip_server" model="ir.actions.act_window">
+            <field name="name">VoIP Servers</field>
+            <field name="res_model">voip.server</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first VoIP Server
+                </p>
+                <p>
+                    Configure your FreePBX server connection to start making calls.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

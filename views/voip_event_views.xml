@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- VoIP Event List View -->
+        <record id="view_voip_event_tree" model="ir.ui.view">
+            <field name="name">voip.event.tree</field>
+            <field name="model">voip.event</field>
+            <field name="arch" type="xml">
+                <list string="VoIP Events" decoration-info="is_call_event == True" decoration-muted="processed == True">
+                    <field name="timestamp"/>
+                    <field name="event_type"/>
+                    <field name="event_summary"/>
+                    <field name="server_id"/>
+                    <field name="caller_id_num"/>
+                    <field name="extension"/>
+                    <field name="channel"/>
+                    <field name="is_call_event" invisible="1"/>
+                    <field name="processed"/>
+                </list>
+            </field>
+        </record>
+        
+        <!-- VoIP Event Form View -->
+        <record id="view_voip_event_form" model="ir.ui.view">
+            <field name="name">voip.event.form</field>
+            <field name="model">voip.event</field>
+            <field name="arch" type="xml">
+                <form string="VoIP Event">
+                    <header>
+                        <button name="action_mark_processed" 
+                                type="object" 
+                                string="Mark as Processed" 
+                                class="btn-primary"
+                                invisible="processed"/>
+                        <button name="action_view_related_events" 
+                                type="object" 
+                                string="View Related Events" 
+                                class="btn-secondary"
+                                invisible="not unique_id and not linked_id"/>
+                        <field name="processed" widget="statusbar" statusbar_visible="draft,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="event_summary" readonly="1"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group string="Event Information">
+                                <field name="event_type"/>
+                                <field name="timestamp"/>
+                                <field name="server_id"/>
+                                <field name="channel"/>
+                                <field name="unique_id"/>
+                                <field name="linked_id"/>
+                            </group>
+                            <group string="Call Information">
+                                <field name="caller_id_num"/>
+                                <field name="caller_id_name"/>
+                                <field name="connected_line_num"/>
+                                <field name="connected_line_name"/>
+                                <field name="extension"/>
+                                <field name="context"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group string="Server Information">
+                                <field name="server_hostname"/>
+                                <field name="server_ami_host"/>
+                                <field name="server_ami_username"/>
+                            </group>
+                            <group string="Statistics">
+                                <field name="total_events"/>
+                                <field name="sent_events"/>
+                                <field name="failed_events"/>
+                                <field name="skipped_events"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Event Data" name="event_data">
+                                <group>
+                                    <field name="event_data" widget="text" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Raw Data" name="raw_data">
+                                <group>
+                                    <field name="raw_data" widget="text" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Processing Notes" name="processing">
+                                <group>
+                                    <field name="processing_notes" widget="text"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- VoIP Event Search View -->
+        <record id="view_voip_event_search" model="ir.ui.view">
+            <field name="name">voip.event.search</field>
+            <field name="model">voip.event</field>
+            <field name="arch" type="xml">
+                <search string="Search VoIP Events">
+                    <field name="event_type"/>
+                    <field name="server_id"/>
+                    <field name="caller_id_num"/>
+                    <field name="extension"/>
+                    <field name="channel"/>
+                    <field name="unique_id"/>
+                    <field name="linked_id"/>
+                    
+                    <filter string="Call Events" name="call_events" domain="[('is_call_event', '=', True)]"/>
+                    <filter string="Unprocessed" name="unprocessed" domain="[('processed', '=', False)]"/>
+                    <filter string="Processed" name="processed" domain="[('processed', '=', True)]"/>
+                    
+                    <separator/>
+                    <filter string="Today" name="today" domain="[('timestamp', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                    <filter string="This Week" name="this_week" domain="[('timestamp', '>=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Month" name="this_month" domain="[('timestamp', '>=', datetime.datetime.combine(context_today().replace(day=1), datetime.time(0,0,0)))]"/>
+                    
+                    <group expand="0" string="Group By">
+                        <filter string="Event Type" name="group_event_type" context="{'group_by': 'event_type'}"/>
+                        <filter string="Server" name="group_server" context="{'group_by': 'server_id'}"/>
+                        <filter string="Date" name="group_date" context="{'group_by': 'timestamp:day'}"/>
+                        <filter string="Processed" name="group_processed" context="{'group_by': 'processed'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <!-- VoIP Event Action -->
+        <record id="action_voip_event" model="ir.actions.act_window">
+            <field name="name">VoIP Events</field>
+            <field name="res_model">voip.event</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_voip_event_search"/>
+            <field name="context">{'search_default_call_events': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No VoIP events found
+                </p>
+                <p>
+                    VoIP events are automatically created when FreePBX sends webhook notifications.
+                    These events help track call activities and system status.
+                </p>
+            </field>
+        </record>
+        
+        <!-- VoIP Event Menu -->
+        <menuitem id="menu_voip_event" 
+                  name="VoIP Events" 
+                  parent="voip_webrtc_freepbx.menu_voip_root" 
+                  action="action_voip_event" 
+                  sequence="50"/>
+        
+    </data>
+</odoo>

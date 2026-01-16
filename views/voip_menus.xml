@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Main VoIP Menu -->
+        <menuitem id="menu_voip_root"
+                  name="VoIP"
+                  web_icon="voip_webrtc_freepbx,static/description/icon.png"
+                  sequence="90"/>
+
+        <!-- VoIP Submenu -->
+        <menuitem id="menu_voip_calls"
+                  name="Calls"
+                  parent="menu_voip_root"
+                  sequence="10"/>
+
+        <menuitem id="menu_voip_call_history"
+                  name="Call History"
+                  parent="menu_voip_calls"
+                  action="action_voip_call"
+                  sequence="10"/>
+
+        <menuitem id="menu_voip_recordings"
+                  name="Recordings"
+                  parent="menu_voip_calls"
+                  action="action_voip_recording"
+                  sequence="20"/>
+
+        <!-- Configuration Menu -->
+        <menuitem id="menu_voip_configuration"
+                  name="Configuration"
+                  parent="menu_voip_root"
+                  sequence="100"
+                  groups="voip_webrtc_freepbx.group_voip_manager"/>
+
+        <menuitem id="menu_voip_servers"
+                  name="VoIP Servers"
+                  parent="menu_voip_configuration"
+                  action="action_voip_server"
+                  sequence="10"/>
+
+        <menuitem id="menu_voip_users"
+                  name="VoIP Users"
+                  parent="menu_voip_configuration"
+                  action="action_voip_user"
+                  sequence="20"/>
+
+    </data>
+</odoo>

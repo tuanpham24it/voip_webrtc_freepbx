@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- VoIP Call Form View -->
+        <record id="view_voip_call_form" model="ir.ui.view">
+            <field name="name">voip.call.form</field>
+            <field name="model">voip.call</field>
+            <field name="arch" type="xml">
+                <form string="VoIP Call" create="false">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="ringing,in_progress,completed"/>
+                        <field name="has_recording" invisible="1"/>
+                        <button name="action_view_recordings" type="object" string="View Recordings" 
+                                invisible="not has_recording" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_recordings" type="object" class="oe_stat_button" icon="fa-microphone"
+                                    invisible="not has_recording">
+                                <field name="recording_count" widget="statinfo" string="Recordings"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="call_info" string="Call Information">
+                                <field name="direction" widget="badge" decoration-info="direction == 'inbound'" decoration-success="direction == 'outbound'"/>
+                                <field name="from_number"/>
+                                <field name="to_number"/>
+                                <field name="partner_id"/>
+                            </group>
+                            <group name="user_info" string="User Information">
+                                <field name="user_id"/>
+                                <field name="odoo_user_id"/>
+                                <field name="server_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group name="timing" string="Timing">
+                                <field name="start_time"/>
+                                <field name="answer_time"/>
+                                <field name="response_time" string="Response Time (seconds)"/>
+                                <field name="end_time"/>
+                                <field name="duration_display" string="Duration"/>
+                            </group>
+                            <group name="technical" string="Technical Details">
+                                <field name="call_id"/>
+                                <field name="hangup_reason"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes" name="notes">
+                                <field name="notes" placeholder="Add notes about this call..."/>
+                            </page>
+                            <page string="Recordings" name="recordings" invisible="not has_recording">
+                                <field name="recording_ids" readonly="1">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="duration_display"/>
+                                        <field name="file_size_display"/>
+                                        <field name="state"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- VoIP Call List View -->
+        <record id="view_voip_call_tree" model="ir.ui.view">
+            <field name="name">voip.call.tree</field>
+            <field name="model">voip.call</field>
+            <field name="arch" type="xml">
+                <list string="Call History" create="false">
+                    <field name="name"/>
+                    <field name="direction" widget="badge" decoration-info="direction == 'inbound'" decoration-success="direction == 'outbound'"/>
+                    <field name="from_number"/>
+                    <field name="to_number"/>
+                    <field name="partner_id"/>
+                    <field name="start_time"/>
+                    <field name="answer_time"/>
+                    <field name="response_time" string="Response Time (seconds)"/>
+                    <field name="end_time"/>
+                    <field name="duration_display" string="Duration"/>
+                    <field name="state" widget="badge" 
+                           decoration-info="state == 'ringing'" 
+                           decoration-success="state == 'completed'"
+                           decoration-warning="state == 'in_progress'"
+                           decoration-danger="state in ['missed', 'failed']"/>
+                    <field name="call_id" string="SIP Call ID"/>
+                    <field name="hangup_reason" string="Hangup Reason"/>
+                    <field name="has_recording" widget="boolean"/>
+                    <field name="odoo_user_id"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- VoIP Call Kanban View -->
+        <record id="view_voip_call_kanban" model="ir.ui.view">
+            <field name="name">voip.call.kanban</field>
+            <field name="model">voip.call</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" create="false">
+                    <field name="name"/>
+                    <field name="direction"/>
+                    <field name="from_number"/>
+                    <field name="to_number"/>
+                    <field name="partner_id"/>
+                    <field name="start_time"/>
+                    <field name="duration_display"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_global_click">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <strong>
+                                            <i class="fa fa-phone" t-attf-class="fa fa-phone-square {{direction == 'inbound' ? 'text-info' : 'text-success'}}" title="Call" aria-label="Call"/>
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <i class="fa fa-arrow-right" title="From/To" aria-label="From/To"/> <field name="from_number"/> → <field name="to_number"/>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <field name="state" widget="label_selection" options="{'classes': {'completed': 'success', 'in_progress': 'warning', 'missed': 'danger'}}"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <i class="fa fa-clock-o" title="Duration" aria-label="Duration"/> <field name="duration_display"/>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <t t-if="record.has_recording.raw_value">
+                                            <i class="fa fa-microphone text-success" title="Recording Available" aria-label="Recording Available"/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- VoIP Call Search View -->
+        <record id="view_voip_call_search" model="ir.ui.view">
+            <field name="name">voip.call.search</field>
+            <field name="model">voip.call</field>
+            <field name="arch" type="xml">
+                <search string="Call History">
+                    <field name="name"/>
+                    <field name="from_number"/>
+                    <field name="to_number"/>
+                    <field name="partner_id"/>
+                    <field name="odoo_user_id"/>
+                    <filter string="Inbound" name="inbound" domain="[('direction', '=', 'inbound')]"/>
+                    <filter string="Outbound" name="outbound" domain="[('direction', '=', 'outbound')]"/>
+                    <separator/>
+                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <filter string="Missed" name="missed" domain="[('state', '=', 'missed')]"/>
+                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                    <separator/>
+                    <filter string="With Recording" name="with_recording" domain="[('has_recording', '=', True)]"/>
+                    <filter string="My Calls" name="my_calls" domain="[('odoo_user_id', '=', uid)]"/>
+                    <separator/>
+                    <filter string="Today" name="today" domain="[('start_time', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Week" name="this_week" domain="[('start_time', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Month" name="this_month" domain="[('start_time', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Direction" name="group_direction" context="{'group_by': 'direction'}"/>
+                        <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="User" name="group_user" context="{'group_by': 'odoo_user_id'}"/>
+                        <filter string="Contact" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Date" name="group_date" context="{'group_by': 'start_time:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- VoIP Call Action -->
+        <record id="action_voip_call" model="ir.actions.act_window">
+            <field name="name">Call History</field>
+            <field name="res_model">voip.call</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="context">{'search_default_my_calls': 1, 'search_default_this_month': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_empty_folder">
+                    No calls found
+                </p>
+                <p>
+                    Your call history will appear here once you start making or receiving calls.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

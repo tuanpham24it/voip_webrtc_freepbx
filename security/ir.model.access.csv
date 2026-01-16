@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_voip_server_user,voip.server.user,model_voip_server,group_voip_user,1,0,0,0
+access_voip_server_manager,voip.server.manager,model_voip_server,group_voip_manager,1,1,1,1
+access_voip_user_user,voip.user.user,model_voip_user,group_voip_user,1,1,0,0
+access_voip_user_manager,voip.user.manager,model_voip_user,group_voip_manager,1,1,1,1
+access_voip_call_user,voip.call.user,model_voip_call,group_voip_user,1,1,1,0
+access_voip_call_manager,voip.call.manager,model_voip_call,group_voip_manager,1,1,1,1
+access_voip_recording_user,voip.recording.user,model_voip_recording,group_voip_user,1,0,1,0
+access_voip_recording_manager,voip.recording.manager,model_voip_recording,group_voip_manager,1,1,1,1
+access_voip_show_api_key_wizard_user,voip.show.api.key.wizard.user,model_voip_show_api_key_wizard,group_voip_user,1,1,1,1
+access_voip_show_api_key_wizard_manager,voip.show.api.key.wizard.manager,model_voip_show_api_key_wizard,group_voip_manager,1,1,1,1
+access_voip_event_user,voip.event.user,model_voip_event,group_voip_user,1,0,1,0
+access_voip_event_manager,voip.event.manager,model_voip_event,group_voip_manager,1,1,1,1
+access_voip_event_public,voip.event.public,model_voip_event,base.group_public,1,0,1,0
+access_voip_hold_music_user,voip.hold.music.user,model_voip_hold_music,group_voip_user,1,1,1,1
+access_voip_hold_music_manager,voip.hold.music.manager,model_voip_hold_music,group_voip_manager,1,1,1,1

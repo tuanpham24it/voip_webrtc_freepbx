@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Call Sequence -->
+        <record id="sequence_voip_call" model="ir.sequence">
+            <field name="name">VoIP Call Sequence</field>
+            <field name="code">voip.call</field>
+            <field name="prefix">CALL/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- Sample VoIP Server -->
+        <record id="voip_server_demo" model="voip.server">
+            <field name="name">Demo VoIP Server</field>
+            <field name="host">demo.voip.com</field>
+            <field name="port">5060</field>
+            <field name="websocket_url">ws://demo.voip.com:8088/ari/events</field>
+            <field name="active">True</field>
+        </record>
+
+
+
+        <!-- Default Hold Music -->
+        <record id="hold_music_default" model="voip.hold.music">
+            <field name="name">Default Hold Music</field>
+            <field name="description">Pleasant default hold music</field>
+            <field name="server_id" ref="voip_server_demo"/>
+            <field name="format">wav</field>
+            <field name="volume">0.7</field>
+            <field name="loop">True</field>
+            <field name="active">True</field>
+            <field name="is_default">True</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <!-- Classical Hold Music -->
+        <record id="hold_music_classical" model="voip.hold.music">
+            <field name="name">Classical Hold Music</field>
+            <field name="description">Classical music for hold</field>
+            <field name="server_id" ref="voip_server_demo"/>
+            <field name="format">wav</field>
+            <field name="volume">0.6</field>
+            <field name="loop">True</field>
+            <field name="active">True</field>
+            <field name="is_default">False</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <!-- Jazz Hold Music -->
+        <record id="hold_music_jazz" model="voip.hold.music">
+            <field name="name">Jazz Hold Music</field>
+            <field name="description">Jazz music for hold</field>
+            <field name="server_id" ref="voip_server_demo"/>
+            <field name="format">wav</field>
+            <field name="volume">0.6</field>
+            <field name="loop">True</field>
+            <field name="active">True</field>
+            <field name="is_default">False</field>
+            <field name="sequence">3</field>
+        </record>
+
+    </data>
+</odoo>
