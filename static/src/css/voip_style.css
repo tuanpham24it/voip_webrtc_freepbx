@@ -67,6 +67,11 @@
     color: #f8f9fa;
 }
 
+/* Customized */
+.o_voip_systray .dropdown-toggle .oi-voip {
+    color: #1e3769;
+}
+
 .o_voip_systray .dropdown-toggle.o_voip_in_call {
     color: #dc3545;
     animation: pulse 1.5s infinite;
