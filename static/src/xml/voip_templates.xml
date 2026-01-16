@@ -562,7 +562,7 @@
                             <!-- Call Actions -->
                             <div class="o_voip_actions">
                                 <button class="btn btn-secondary" t-on-click="backspace">
-                                    <i class="fa fa-backspace"/>
+                                    <i class="fa fa-times"/>
                                 </button>
                                 <button class="btn btn-success flex-grow-1"
                                         t-on-click="makeCall"

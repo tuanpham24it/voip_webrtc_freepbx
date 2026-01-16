@@ -1,4 +1,10 @@
 /* VoIP WebRTC FreePBX Styles - Clean Professional Design */
+:root {
+  --primary-color: #1e3769;
+  --primary-color-10: rgba(30, 55, 105, 0.1);
+  --primary-color-20: rgba(30, 55, 105, 0.2);
+  --primary-color-50: rgba(30, 55, 105, 0.5);
+}
 
 .o_voip_systray {
     position: relative;
@@ -96,18 +102,18 @@
 .o_voip_systray .dropdown-menu {
     /* top: 200px; */
     /* right: 0; */
-    position: absolute;
-    left: 10px;
+    position: fixed;
+    right: 10px;
     bottom: 10px;
     border: 0px !important;
     border-radius: 12px;
-    transform: translateX(0);
+    /* transform: translateX(0); */
 }
 
 /* Modern Header Design */
 .o_voip_dialer_header {
     padding: 0;
-    /* background: linear-gradient(135deg, #1e3769 0%, #142954 100%); */
+    /* background: linear-gradient(135deg, var(--primary-color) 0%, #142954 100%); */
     background: #1e3c72;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #2a5298, #1e3c72);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #2a5298, #1e3c72); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
@@ -129,15 +135,16 @@
 
 .o_voip_number_display input {
     width: 100%;
-    padding: 18px 20px;
-    font-size: 22px;
+    padding: 12px;
+    font-size: 16px;
     font-weight: 600;
     text-align: center;
-    border: 2px solid rgba(168, 73, 143, 0.2);
+
+    border: 2px solid var(--primary-color-20);
     border-radius: 15px;
     background: rgba(255, 255, 255, 0.9);
-    color: #1e3769;
-    box-shadow: 0 4px 10px rgba(168, 73, 143, 0.1);
+    color: var(--primary-color);
+    box-shadow: 0 4px 10px var(--primary-color-10);
     transition: all 0.3s ease;
     letter-spacing: 2px;
     backdrop-filter: blur(10px);
@@ -145,14 +152,14 @@
 
 .o_voip_number_display input:focus {
     outline: none;
-    border-color: #1e3769;
+    /* border-color: var(--primary-color); */
     background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(168, 73, 143, 0.15);
+    box-shadow: 0 0 0 4px var(--primary-color-20);
     transform: scale(1.02);
 }
 
 .o_voip_number_display input::placeholder {
-    color: rgba(168, 73, 143, 0.5);
+    color: var(--primary-color-50);
     font-weight: 400;
     letter-spacing: 1px;
 }
@@ -174,26 +181,26 @@
     height: 55px;
     border: none;
     /*border-radius: 50%;*/
-    background: linear-gradient(135deg, rgba(168, 73, 143, 0.1) 0%, rgba(125, 58, 117, 0.1) 100%);
-    color: #1e3769;
+    background: var(--primary-color-20);
+    color: var(--primary-color);
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 3px 8px rgba(168, 73, 143, 0.15);
+    box-shadow: 0 3px 8px var(--primary-color-10);
     backdrop-filter: blur(10px);
 }
 
 .o_voip_dialpad_row button:hover {
-    background: linear-gradient(135deg, #1e3769 0%, #142954 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #142954 100%);
     color: white;
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 15px rgba(168, 73, 143, 0.3);
+    box-shadow: 0 6px 15px var(--primary-color-20);
 }
 
 .o_voip_dialpad_row button:active {
     transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 2px 6px rgba(168, 73, 143, 0.2);
+    box-shadow: 0 2px 6px var(--primary-color-20);
 }
 
 /* Actions */
@@ -220,9 +227,9 @@
 }
 
 .o_voip_actions button.btn-success {
-    background: linear-gradient(135deg, #1e3769 0%, #142954 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #142954 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(168, 73, 143, 0.3);
+    box-shadow: 0 4px 12px var(--primary-color-20);
     border: none;
     position: relative;
     overflow: hidden;
@@ -247,7 +254,7 @@
 }
 
 .o_voip_actions button.btn-success:hover {
-    background: linear-gradient(135deg, #142954 0%, #1e3769 100%);
+    background: linear-gradient(135deg, #142954 0%, var(--primary-color) 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(168, 73, 143, 0.5);
 }
@@ -260,8 +267,8 @@
 }
 
 .o_voip_actions button.btn-secondary {
-    background: rgba(168, 73, 143, 0.1);
-    color: #1e3769;
+    background: var(--primary-color-10);
+    color: var(--primary-color);
     border: none;
     box-shadow: 0 2px 6px rgba(168, 73, 143, 0.15);
     flex: 0 0 48px;
@@ -383,7 +390,7 @@
 
 /* Active Call Screen - Beautiful Gradient Design */
 .o_voip_call_screen {
-    background: linear-gradient(180deg, #1e3769 0%, #142954 100%);
+    background: linear-gradient(180deg, var(--primary-color) 0%, #142954 100%);
     min-height: 450px;
     display: flex;
     flex-direction: column;
@@ -1605,7 +1612,7 @@
 
 /* Tab Content */
 .o_voip_tab_content {
-    background: linear-gradient(135deg, #1e3769 0%, #142954 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #142954 100%);
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
@@ -1642,8 +1649,8 @@
 }
 
 .o_voip_tab.active {
-    color: #1e3769;
-    background: rgba(168, 73, 143, 0.1);
+    color: var(--primary-color);
+    background: var(--primary-color-10);
 }
 
 .o_voip_tab.active i {
@@ -1652,7 +1659,7 @@
 
 .o_voip_tab:hover {
     background: #edf2f7;
-    color: #1e3769;
+    color: var(--primary-color);
 }
 
 /* History Screen */
@@ -1743,7 +1750,7 @@
 .o_voip_search_box input {
     width: 100%;
     padding: 12px 18px 12px 45px;
-    border: 2px solid rgba(168, 73, 143, 0.2);
+    border: 2px solid var(--primary-color-20);
     border-radius: 25px;
     font-size: 14px;
     outline: none;
@@ -1767,7 +1774,7 @@
 }
 
 .o_voip_search_box input:focus {
-    border-color: #1e3769;
+    border-color: var(--primary-color);
     background: #ffffff;
     box-shadow: 0 0 0 4px rgba(168, 73, 143, 0.15);
 }
@@ -1801,7 +1808,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #1e3769 0%, #142954 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #142954 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1837,7 +1844,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #1e3769, #142954);
+    background: linear-gradient(135deg, var(--primary-color), #142954);
     border: none;
     color: white;
     font-size: 16px;
@@ -1846,13 +1853,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 3px 8px rgba(168, 73, 143, 0.3);
+    box-shadow: 0 3px 8px var(--primary-color-20);
 }
 
 .o_voip_quick_call_btn:hover {
     transform: scale(1.15);
-    box-shadow: 0 6px 15px rgba(168, 73, 143, 0.5);
-    background: linear-gradient(135deg, #142954, #1e3769);
+    box-shadow: 0 6px 15px var(--primary-color-50);
+    background: linear-gradient(135deg, #142954, var(--primary-color));
 }
 
 /* Responsive adjustments */
@@ -2275,7 +2282,7 @@
 }
 
 .o_voip_incoming_call_display {
-    background: linear-gradient(135deg, #1e3769 0%, #142954 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #142954 100%);
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -3489,7 +3496,7 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #1e3769 0%, #142954 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #142954 100%);
     color: #ffffff;
     border-radius: 10px;
     font-size: 16px;
@@ -3517,7 +3524,7 @@
     width: 32px;
     height: 32px;
     background: rgba(168, 73, 143, 0.1);
-    color: #1e3769;
+    color: var(--primary-color);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -3550,7 +3557,7 @@
 .o_voip_transfer_search_input i {
     position: absolute;
     left: 12px;
-    color: #1e3769;
+    color: var(--primary-color);
     font-size: 14px;
     z-index: 1;
 }
@@ -3567,7 +3574,7 @@
 }
 
 .o_voip_transfer_search_field:focus {
-    border-color: #1e3769;
+    border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(168, 73, 143, 0.1);
 }
 
@@ -3617,7 +3624,7 @@
     width: 60px;
     height: 60px;
     background: rgba(168, 73, 143, 0.1);
-    color: #1e3769;
+    color: var(--primary-color);
     border-radius: 50%;
     font-size: 24px;
     margin-bottom: 16px;
@@ -3767,7 +3774,7 @@
 
 .o_voip_transfer_user_extension i,
 .o_voip_transfer_user_server i {
-    color: #1e3769;
+    color: var(--primary-color);
     font-size: 10px;
     width: 12px;
     text-align: center;
@@ -3784,7 +3791,7 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, #1e3769 0%, #142954 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #142954 100%);
     color: #ffffff;
     border-radius: 8px;
     font-size: 14px;
