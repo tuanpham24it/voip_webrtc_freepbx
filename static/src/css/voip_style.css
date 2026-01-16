@@ -69,7 +69,11 @@
 
 /* Customized */
 .o_voip_systray .dropdown-toggle .oi-voip {
-    color: #1e3769;
+    color: #fff !important;
+}
+
+.o_main_navbar .show .dropdown-toggle {
+    background-color: #132241 !important;
 }
 
 .o_voip_systray .dropdown-toggle.o_voip_in_call {
